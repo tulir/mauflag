@@ -26,9 +26,11 @@ import (
 type Set struct {
 	// The list of strings used as input
 	InputArgs []string
-	// Whether or not to ignore all flags after the user has entered two lines with no flag key ("--")
+	// Whether or not to ignore all flags after the user has entered two dashes with no flag key ("--")
+	// If enabled, all arguments after two dashes with no flag key will go into the args array (@see Args())
 	DoubleLineEscape bool
 	// Whether or not to exit the program when there's an error
+	// If enabled, the error message will be printed to `stderr` after which `os.Exit(1)` will be called.
 	ExitOnError bool
 
 	args  []string
@@ -46,14 +48,18 @@ func (fs *Set) Args() []string {
 }
 
 // Arg returns the string at the given index from the list Args() returns
+// If the index does not exist, Arg will return an empty string.
 func (fs *Set) Arg(i int) string {
+	if len(fs.args) >= i {
+		return ""
+	}
 	return fs.args[i]
 }
 
 func (fs *Set) err(format string, args ...interface{}) error {
 	if fs.ExitOnError {
-		fmt.Printf(format, args...)
-		fmt.Print("\n")
+		fmt.Fprintf(os.Stderr, format, args...)
+		fmt.Fprint(os.Stderr, "\n")
 		os.Exit(1)
 		return nil
 	}
@@ -61,6 +67,7 @@ func (fs *Set) err(format string, args ...interface{}) error {
 }
 
 // Parse the input arguments in this flagset into mauflag form
+// Before this function is called all the flags will have either the type default or the given default value
 func (fs *Set) Parse() error {
 	var flag *Flag
 	var key string

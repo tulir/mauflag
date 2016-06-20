@@ -22,9 +22,12 @@ import (
 	"strings"
 )
 
-// Value represents some value of a flag
+// Value represents the value a flag has
 type Value interface {
+	// Set or add the data in the given string to this value
 	Set(string) error
+	// Name should return the type name of this value or (if this value is an array,
+	// a map or something of that sort) the type name of one object in this value
 	Name() string
 }
 

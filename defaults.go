@@ -44,7 +44,8 @@ func Args() []string {
 }
 
 // Arg returns the string at the given index from the list Args() returns
-// Note: The first arg is the command
+// If the index does not exist, Arg will return an empty string.
+// Note: The first arg (`Arg(0)`) is the command
 func Arg(i int) string {
 	return DefaultSet().Arg(i)
 }
