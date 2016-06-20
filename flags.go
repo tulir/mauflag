@@ -103,7 +103,7 @@ func (flag *Flag) StringMap() *map[string]string {
 
 // StringArray sets the type of this flag to a string array and returns a pointer to the value
 func (flag *Flag) StringArray() *[]string {
-	val := stringArrayValue([]string{})
+	val := stringArrayValue{}
 	flag.Value = &val
 	flag.activateDefaultValue()
 	return (*[]string)(&val)
@@ -111,7 +111,7 @@ func (flag *Flag) StringArray() *[]string {
 
 // IntArray sets the type of this flag to a signed default-length integer array and returns a pointer to the value
 func (flag *Flag) IntArray() *[]int {
-	val := intArrayValue([]int{})
+	val := intArrayValue{}
 	flag.Value = &val
 	flag.activateDefaultValue()
 	return (*[]int)(&val)
@@ -119,7 +119,7 @@ func (flag *Flag) IntArray() *[]int {
 
 // Int64Array sets the type of this flag to a signed 64-bit integer array and returns a pointer to the value
 func (flag *Flag) Int64Array() *[]int64 {
-	val := int64ArrayValue([]int64{})
+	val := int64ArrayValue{}
 	flag.Value = &val
 	flag.activateDefaultValue()
 	return (*[]int64)(&val)
