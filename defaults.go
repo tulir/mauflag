@@ -20,7 +20,7 @@ import (
 	"os"
 )
 
-var defaultSet = New(os.Args)
+var defaultSet = New(os.Args[1:])
 
 // DefaultSet returns the default flagset which takes its arguments from os.Args
 func DefaultSet() *Set {
@@ -38,14 +38,12 @@ func Parse() error {
 }
 
 // Args returns the arguments that weren't associated with any flag
-// Note: The first arg is the command
 func Args() []string {
 	return DefaultSet().Args()
 }
 
 // Arg returns the string at the given index from the list Args() returns
 // If the index does not exist, Arg will return an empty string.
-// Note: The first arg (`Arg(0)`) is the command
 func Arg(i int) string {
 	return DefaultSet().Arg(i)
 }
