@@ -28,12 +28,12 @@ type Flag struct {
 }
 
 // Make creates and registers a flag
-func Make() *Flag {
+func (fs *FlagSet) Make() *Flag {
 	flag := &Flag{}
 	val := stringValue("")
 	flag.Value = &val
 	flag.activateDefaultValue()
-	flags = append(flags, flag)
+	fs.Flags = append(fs.Flags, flag)
 	return flag
 }
 

@@ -14,29 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package flag
 
 import (
-	"fmt"
-	"maunium.net/go/mauflag"
+	"os"
 )
 
-var bf = flag.Make().LongKey("bff").ShortKey("b").Bool()
-var str = flag.Make().LongKey("this-is-a-string").ShortKey("s").ShortKey("i").String()
-var array = flag.Make().LongKey("array").ShortKey("a").LongKey("arr").StringArray()
-var def = flag.Make().LongKey("asd").Default("lorem").String()
+var defaultFlagset = NewFlagset(os.Args[1:])
 
-func main() {
-	fmt.Println(flag.Parse())
-	fmt.Println(*bf)
-	fmt.Println(*str)
-	fmt.Println(*def)
-	for _, arg := range *array {
-		fmt.Print(arg, ", ")
-	}
-	fmt.Print("\n")
-	for _, arg := range flag.Args() {
-		fmt.Print(arg, ", ")
-	}
-	fmt.Print("\n")
+// DefaultFlagset returns the default flagset
+func DefaultFlagset() *FlagSet {
+	return defaultFlagset
+}
+
+// Make calls the Make() function of the default flagset
+func Make() *Flag {
+	return defaultFlagset.Make()
+}
+
+// Parse calls the Parse() function of the default flagset
+func Parse() error {
+	return defaultFlagset.Parse()
+}
+
+// Args returns the Args array of the default flagset
+func Args() []string {
+	return defaultFlagset.Args
+}
+
+// Arg gets the `ì`th arg of the default flagset
+func Arg(i int) string {
+	return defaultFlagset.Args[i]
 }

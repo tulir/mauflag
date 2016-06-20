@@ -18,28 +18,31 @@ package flag
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
-// Command is the command that was executed
-var Command string
+// FlagSet is a set of flags with certain input arguments
+type FlagSet struct {
+	InputArgs []string
+	Args      []string
+	Flags     []*Flag
+}
 
-// Args contains the arguments that weren't affiliated with any flag
-var Args []string
+// NewFlagset creates a new flagset
+func NewFlagset(args []string) *FlagSet {
+	return &FlagSet{InputArgs: args}
+}
 
 // Parse the command line arguments into mauflag form
-func Parse() error {
+func (fs *FlagSet) Parse() error {
 	var flag *Flag
 	var key string
 	var noMoreFlags = false
-	Command = os.Args[0]
-	os.Args = os.Args[1:]
 
-	for _, arg := range os.Args {
+	for _, arg := range fs.InputArgs {
 		arg = strings.ToLower(arg)
 		if noMoreFlags {
-			Args = append(Args, arg)
+			fs.Args = append(fs.Args, arg)
 		} else if arg == "--" {
 			noMoreFlags = true
 		} else if flag != nil {
@@ -50,18 +53,18 @@ func Parse() error {
 			flag = nil
 		} else if arg[0] == '-' {
 			var err error
-			key, flag, err = flagStart(arg)
+			key, flag, err = fs.flagStart(arg)
 			if err != nil {
 				return err
 			}
 		} else {
-			Args = append(Args, arg)
+			fs.Args = append(fs.Args, arg)
 		}
 	}
 	return nil
 }
 
-func flagStart(arg string) (string, *Flag, error) {
+func (fs *FlagSet) flagStart(arg string) (string, *Flag, error) {
 	key := arg[1:]
 
 	var val string
@@ -70,7 +73,7 @@ func flagStart(arg string) (string, *Flag, error) {
 		key = key[:strings.Index(arg, "=")]
 	}
 
-	flag, key := getFlag(key)
+	flag, key := fs.getFlag(key)
 	if flag == nil {
 		return "", nil, fmt.Errorf("Unknown flag: %s", key)
 	} else if len(val) > 0 {
@@ -86,7 +89,7 @@ func flagStart(arg string) (string, *Flag, error) {
 	return key, flag, nil
 }
 
-func getFlag(key string) (*Flag, string) {
+func (fs *FlagSet) getFlag(key string) (*Flag, string) {
 	if key[0] == '-' {
 		key = key[1:]
 		for _, lflag := range flags {
