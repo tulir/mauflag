@@ -1,6 +1,8 @@
 # mauflag
 An extendable command-line argument parser for Golang.
 
+Use `go get maunium.net/go/mauflag` to get this package
+
 ## Basic usage
 A flag can have as many long or short keys as you like. Short keys are prefixed with one dash (`-`) whilst long keys are prefixed with two (`--`)
 
