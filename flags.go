@@ -133,6 +133,14 @@ func (flag *Flag) Uint8() *uint8 {
 	return (*uint8)(&val)
 }
 
+// Byte sets the type of this flag to a byte (unsigned 8-bit integer) and returns a pointer to the value
+func (flag *Flag) Byte() *byte {
+	val := byteValue(0)
+	flag.Value = &val
+	flag.activateDefaultValue()
+	return (*byte)(&val)
+}
+
 // Int16 sets the type of this flag to a signed 16-bit integer and returns a pointer to the value
 func (flag *Flag) Int16() *int16 {
 	val := int16Value(0)
@@ -155,6 +163,14 @@ func (flag *Flag) Int32() *int32 {
 	flag.Value = &val
 	flag.activateDefaultValue()
 	return (*int32)(&val)
+}
+
+// Rune sets the type of this flag to a rune (signed 32-bit integer) and returns a pointer to the value
+func (flag *Flag) Rune() *rune {
+	val := runeValue(0)
+	flag.Value = &val
+	flag.activateDefaultValue()
+	return (*rune)(&val)
 }
 
 // Uint32 sets the type of this flag to an unsigned 32-bit integer and returns a pointer to the value

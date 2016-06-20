@@ -118,6 +118,20 @@ func (val *uint8Value) Set(newVal string) error {
 	return err
 }
 
+type byteValue byte
+
+func (val *byteValue) Name() string {
+	return "rune (unsigned 8-bit integer)"
+}
+
+func (val *byteValue) Set(newVal string) error {
+	i, err := strconv.ParseUint(newVal, 10, 8)
+	if err == nil {
+		*val = byteValue(i)
+	}
+	return err
+}
+
 type int16Value int16
 
 func (val *int16Value) Name() string {
@@ -156,6 +170,20 @@ func (val *int32Value) Set(newVal string) error {
 	i, err := strconv.ParseInt(newVal, 10, 32)
 	if err == nil {
 		*val = int32Value(i)
+	}
+	return err
+}
+
+type runeValue rune
+
+func (val *runeValue) Name() string {
+	return "rune (signed 32-bit integer)"
+}
+
+func (val *runeValue) Set(newVal string) error {
+	i, err := strconv.ParseInt(newVal, 10, 32)
+	if err == nil {
+		*val = runeValue(i)
 	}
 	return err
 }
