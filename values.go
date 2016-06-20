@@ -62,6 +62,21 @@ func (val *stringArrayValue) Set(newVal string) error {
 	return nil
 }
 
+type int64ArrayValue []int64
+
+func (val *int64ArrayValue) Name() string {
+	return "signed 64-bit integer array"
+}
+
+func (val *int64ArrayValue) Set(newVal string) error {
+	i, err := strconv.ParseInt(newVal, 10, 64)
+	if err != nil {
+		return err
+	}
+	*val = append(*val, i)
+	return nil
+}
+
 type intValue int
 
 func (val *intValue) Name() string {
