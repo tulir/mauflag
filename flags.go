@@ -93,6 +93,14 @@ func (flag *Flag) String() *string {
 	return (*string)(&val)
 }
 
+// StringMap sets the type of this flag to a string-string map and returns a pointer to the value
+func (flag *Flag) StringMap() *map[string]string {
+	val := ssMapValue{}
+	flag.Value = &val
+	flag.activateDefaultValue()
+	return (*map[string]string)(&val)
+}
+
 // StringArray sets the type of this flag to a string array and returns a pointer to the value
 func (flag *Flag) StringArray() *[]string {
 	val := stringArrayValue([]string{})

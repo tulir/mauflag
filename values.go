@@ -17,7 +17,9 @@
 package flag
 
 import (
+	"errors"
 	"strconv"
+	"strings"
 )
 
 // Value represents some value of a flag
@@ -48,6 +50,27 @@ func (val *stringValue) Name() string {
 
 func (val *stringValue) Set(newVal string) error {
 	*val = stringValue(newVal)
+	return nil
+}
+
+type ssMapValue map[string]string
+
+func (val *ssMapValue) Name() string {
+	return "string-string pair"
+}
+
+func (val *ssMapValue) Set(newVal string) error {
+	index := strings.IndexRune(newVal, '=')
+	if index == -1 {
+		index = strings.IndexRune(newVal, ',')
+		if index == -1 {
+			index = strings.IndexRune(newVal, ':')
+			if index == -1 {
+				return errors.New("No pair separator found")
+			}
+		}
+	}
+	(*val)[newVal[:index]] = newVal[:index+1]
 	return nil
 }
 
