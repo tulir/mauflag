@@ -18,6 +18,7 @@ package flag
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -27,6 +28,8 @@ type Set struct {
 	InputArgs []string
 	// Whether or not to ignore all flags after the user has entered two lines with no flag key ("--")
 	DoubleLineEscape bool
+	// Whether or not to exit the program when there's an error
+	ExitOnError bool
 
 	args  []string
 	flags []*Flag
@@ -47,6 +50,16 @@ func (fs *Set) Arg(i int) string {
 	return fs.args[i]
 }
 
+func (fs *Set) err(format string, args ...interface{}) error {
+	if fs.ExitOnError {
+		fmt.Printf(format, args...)
+		fmt.Print("\n")
+		os.Exit(1)
+		return nil
+	}
+	return fmt.Errorf(format, args...)
+}
+
 // Parse the input arguments in this flagset into mauflag form
 func (fs *Set) Parse() error {
 	var flag *Flag
@@ -62,7 +75,7 @@ func (fs *Set) Parse() error {
 		} else if flag != nil {
 			err := flag.setValue(arg)
 			if err != nil {
-				return fmt.Errorf("Flag %s was not a %s", key, flag.Value.Name())
+				return fs.err("Flag %s was not a %s", key, flag.Value.Name())
 			}
 			flag = nil
 		} else if arg[0] == '-' {
@@ -89,7 +102,7 @@ func (fs *Set) flagStart(arg string) (string, *Flag, error) {
 
 	flag, key := fs.getFlag(key)
 	if flag == nil {
-		return "", nil, fmt.Errorf("Unknown flag: %s", key)
+		return "", nil, fs.err("Unknown flag: %s", key)
 	} else if len(val) > 0 {
 		flag.setValue(val)
 		return "", nil, nil
