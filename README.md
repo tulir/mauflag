@@ -8,11 +8,12 @@ To create a flag, you must first call the `Make()` method in a flagset. Calling 
 
 After creating a flag, you can call the functions it has as you like. After configuring the flag, you can call one of the type functions to set the flag type and get a pointer to the value.
 
-
 ```go
 var myStringFlag = flag.Make().ShortKey("s").LongKey("my-string-flag").Default("a string").String()
 ```
 This example creates a flag that takes string values. The flag can be set using `-s` or `--my-string-flag`. If the input doesn't contain a value for the flag the value will be `a string`
+
+More docs, including all values supported by default, can be found from [godoc.org/maunium.net/go/mauflag](https://godoc.org/maunium.net/go/mauflag)
 
 ## Custom values
 All value containers must implement the `Value` interface. It contains two functions:
