@@ -47,7 +47,7 @@ func (fs *Set) Arg(i int) string {
 	return fs.args[i]
 }
 
-// Parse the command line arguments into mauflag form
+// Parse the input arguments in this flagset into mauflag form
 func (fs *Set) Parse() error {
 	var flag *Flag
 	var key string

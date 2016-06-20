@@ -20,29 +20,31 @@ import (
 	"os"
 )
 
-var defaultSet = New(os.Args[1:])
+var defaultSet = New(os.Args)
 
-// DefaultSet returns the default flagset
+// DefaultSet returns the default flagset which takes its arguments from os.Args
 func DefaultSet() *Set {
 	return defaultSet
 }
 
-// Make calls the Make() function of the default flagset
+// Make creates and registers a flag
 func Make() *Flag {
 	return DefaultSet().Make()
 }
 
-// Parse calls the Parse() function of the default flagset
+// Parse the command line arguments into mauflag form
 func Parse() error {
 	return DefaultSet().Parse()
 }
 
-// Args calls the Args() function of the default flagset
+// Args returns the arguments that weren't associated with any flag
+// Note: The first arg is the command
 func Args() []string {
 	return DefaultSet().Args()
 }
 
-// Arg calls the Arg(i) function of the default flagset
+// Arg returns the string at the given index from the list Args() returns
+// Note: The first arg is the command
 func Arg(i int) string {
 	return DefaultSet().Arg(i)
 }
