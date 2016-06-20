@@ -79,7 +79,6 @@ func (fs *Set) Parse() error {
 	var noMoreFlags = false
 
 	for _, arg := range fs.InputArgs {
-		arg = strings.ToLower(arg)
 		if noMoreFlags {
 			fs.args = append(fs.args, arg)
 		} else if arg == "--" && fs.DoubleLineEscape {
@@ -91,6 +90,7 @@ func (fs *Set) Parse() error {
 			}
 			flag = nil
 		} else if arg[0] == '-' {
+			arg = strings.ToLower(arg)
 			var err error
 			key, flag, err = fs.flagStart(arg)
 			if err != nil {
