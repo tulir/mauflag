@@ -28,7 +28,7 @@ type Flag struct {
 }
 
 // Make creates and registers a flag
-func (fs *FlagSet) Make() *Flag {
+func (fs *Set) Make() *Flag {
 	flag := &Flag{}
 	val := stringValue("")
 	flag.Value = &val

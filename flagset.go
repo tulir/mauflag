@@ -21,20 +21,21 @@ import (
 	"strings"
 )
 
-// FlagSet is a set of flags with certain input arguments
-type FlagSet struct {
-	InputArgs []string
-	Args      []string
-	Flags     []*Flag
+// Set is a set of flags with certain input arguments
+type Set struct {
+	InputArgs        []string
+	Args             []string
+	Flags            []*Flag
+	DoubleLineEscape bool
 }
 
-// NewFlagset creates a new flagset
-func NewFlagset(args []string) *FlagSet {
-	return &FlagSet{InputArgs: args}
+// New creates a new flagset
+func New(args []string) *Set {
+	return &Set{InputArgs: args}
 }
 
 // Parse the command line arguments into mauflag form
-func (fs *FlagSet) Parse() error {
+func (fs *Set) Parse() error {
 	var flag *Flag
 	var key string
 	var noMoreFlags = false
@@ -64,7 +65,7 @@ func (fs *FlagSet) Parse() error {
 	return nil
 }
 
-func (fs *FlagSet) flagStart(arg string) (string, *Flag, error) {
+func (fs *Set) flagStart(arg string) (string, *Flag, error) {
 	key := arg[1:]
 
 	var val string
@@ -89,7 +90,7 @@ func (fs *FlagSet) flagStart(arg string) (string, *Flag, error) {
 	return key, flag, nil
 }
 
-func (fs *FlagSet) getFlag(key string) (*Flag, string) {
+func (fs *Set) getFlag(key string) (*Flag, string) {
 	if key[0] == '-' {
 		key = key[1:]
 		for _, lflag := range flags {

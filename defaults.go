@@ -20,29 +20,29 @@ import (
 	"os"
 )
 
-var defaultFlagset = NewFlagset(os.Args[1:])
+var defaultSet = New(os.Args[1:])
 
-// DefaultFlagset returns the default flagset
-func DefaultFlagset() *FlagSet {
-	return defaultFlagset
+// DefaultSet returns the default flagset
+func DefaultSet() *Set {
+	return defaultSet
 }
 
 // Make calls the Make() function of the default flagset
 func Make() *Flag {
-	return defaultFlagset.Make()
+	return DefaultSet().Make()
 }
 
 // Parse calls the Parse() function of the default flagset
 func Parse() error {
-	return defaultFlagset.Parse()
+	return DefaultSet().Parse()
 }
 
 // Args returns the Args array of the default flagset
 func Args() []string {
-	return defaultFlagset.Args
+	return DefaultSet().Args
 }
 
 // Arg gets the `ì`th arg of the default flagset
 func Arg(i int) string {
-	return defaultFlagset.Args[i]
+	return DefaultSet().Args[i]
 }
