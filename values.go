@@ -194,14 +194,38 @@ func (val *uint64Value) Name() string {
 	return "unsigned 64-bit integer"
 }
 
-func (val *uint64Value) String() string {
-	return strconv.FormatUint(uint64(*val), 10)
-}
-
 func (val *uint64Value) Set(newVal string) error {
 	i, err := strconv.ParseUint(newVal, 10, 64)
 	if err == nil {
 		*val = uint64Value(i)
+	}
+	return err
+}
+
+type float32Value float32
+
+func (val *float32Value) Name() string {
+	return "32-bit float"
+}
+
+func (val *float32Value) Set(newVal string) error {
+	i, err := strconv.ParseFloat(newVal, 32)
+	if err == nil {
+		*val = float32Value(i)
+	}
+	return err
+}
+
+type float64Value float64
+
+func (val *float64Value) Name() string {
+	return "64-bit float"
+}
+
+func (val *float64Value) Set(newVal string) error {
+	i, err := strconv.ParseFloat(newVal, 64)
+	if err == nil {
+		*val = float64Value(i)
 	}
 	return err
 }

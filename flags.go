@@ -180,3 +180,19 @@ func (flag *Flag) Uint64() *uint64 {
 	flag.activateDefaultValue()
 	return (*uint64)(&val)
 }
+
+// Float32 sets the type of this flag to an 32-bit float and returns a pointer to the value
+func (flag *Flag) Float32() *float32 {
+	val := float32Value(0)
+	flag.Value = &val
+	flag.activateDefaultValue()
+	return (*float32)(&val)
+}
+
+// Float64 sets the type of this flag to an 64-bit float and returns a pointer to the value
+func (flag *Flag) Float64() *float64 {
+	val := float64Value(0)
+	flag.Value = &val
+	flag.activateDefaultValue()
+	return (*float64)(&val)
+}
