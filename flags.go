@@ -101,7 +101,7 @@ func (flag *Flag) StringArray() *[]string {
 	return (*[]string)(&val)
 }
 
-// Int64Array sets the type of this flag to a unsigned 64-bit integer array and returns a pointer to the value
+// Int64Array sets the type of this flag to a signed 64-bit integer array and returns a pointer to the value
 func (flag *Flag) Int64Array() *[]int64 {
 	val := int64ArrayValue([]int64{})
 	flag.Value = &val
