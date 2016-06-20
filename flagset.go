@@ -50,7 +50,7 @@ func (fs *Set) Args() []string {
 // Arg returns the string at the given index from the list Args() returns
 // If the index does not exist, Arg will return an empty string.
 func (fs *Set) Arg(i int) string {
-	if len(fs.args) >= i {
+	if len(fs.args) <= i {
 		return ""
 	}
 	return fs.args[i]
