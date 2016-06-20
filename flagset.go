@@ -23,15 +23,28 @@ import (
 
 // Set is a set of flags with certain input arguments
 type Set struct {
-	InputArgs        []string
-	Args             []string
-	Flags            []*Flag
+	// The list of strings used as input
+	InputArgs []string
+	// Whether or not to ignore all flags after the user has entered two lines with no flag key ("--")
 	DoubleLineEscape bool
+
+	args  []string
+	flags []*Flag
 }
 
 // New creates a new flagset
 func New(args []string) *Set {
 	return &Set{InputArgs: args}
+}
+
+// Args returns the arguments that weren't associated with any flag
+func (fs *Set) Args() []string {
+	return fs.args
+}
+
+// Arg returns the string at the given index from the list Args() returns
+func (fs *Set) Arg(i int) string {
+	return fs.args[i]
 }
 
 // Parse the command line arguments into mauflag form
@@ -43,8 +56,8 @@ func (fs *Set) Parse() error {
 	for _, arg := range fs.InputArgs {
 		arg = strings.ToLower(arg)
 		if noMoreFlags {
-			fs.Args = append(fs.Args, arg)
-		} else if arg == "--" {
+			fs.args = append(fs.args, arg)
+		} else if arg == "--" && fs.DoubleLineEscape {
 			noMoreFlags = true
 		} else if flag != nil {
 			err := flag.setValue(arg)
@@ -59,7 +72,7 @@ func (fs *Set) Parse() error {
 				return err
 			}
 		} else {
-			fs.Args = append(fs.Args, arg)
+			fs.args = append(fs.args, arg)
 		}
 	}
 	return nil

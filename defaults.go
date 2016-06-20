@@ -37,12 +37,12 @@ func Parse() error {
 	return DefaultSet().Parse()
 }
 
-// Args returns the Args array of the default flagset
+// Args calls the Args() function of the default flagset
 func Args() []string {
-	return DefaultSet().Args
+	return DefaultSet().Args()
 }
 
-// Arg gets the `ì`th arg of the default flagset
+// Arg calls the Arg(i) function of the default flagset
 func Arg(i int) string {
-	return DefaultSet().Args[i]
+	return DefaultSet().Arg(i)
 }

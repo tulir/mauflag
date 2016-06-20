@@ -33,7 +33,7 @@ func (fs *Set) Make() *Flag {
 	val := stringValue("")
 	flag.Value = &val
 	flag.activateDefaultValue()
-	fs.Flags = append(fs.Flags, flag)
+	fs.flags = append(fs.flags, flag)
 	return flag
 }
 
