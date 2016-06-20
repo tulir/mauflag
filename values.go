@@ -62,6 +62,21 @@ func (val *stringArrayValue) Set(newVal string) error {
 	return nil
 }
 
+type intArrayValue []int
+
+func (val *intArrayValue) Name() string {
+	return "signed integer"
+}
+
+func (val *intArrayValue) Set(newVal string) error {
+	i, err := strconv.Atoi(newVal)
+	if err != nil {
+		return err
+	}
+	*val = append(*val, i)
+	return nil
+}
+
 type int64ArrayValue []int64
 
 func (val *int64ArrayValue) Name() string {
