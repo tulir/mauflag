@@ -56,6 +56,11 @@ func (fs *Set) Arg(i int) string {
 	return fs.args[i]
 }
 
+// NArg returns the number of arguments not associated with any flags
+func (fs *Set) NArg() int {
+	return len(fs.args)
+}
+
 func (fs *Set) err(format string, args ...interface{}) error {
 	if fs.ExitOnError {
 		fmt.Fprintf(os.Stderr, format, args...)

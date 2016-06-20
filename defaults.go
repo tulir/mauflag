@@ -49,3 +49,8 @@ func Args() []string {
 func Arg(i int) string {
 	return DefaultSet().Arg(i)
 }
+
+// NArg returns the number of arguments not associated with any flags
+func NArg() int {
+	return len(DefaultSet().args)
+}
