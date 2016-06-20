@@ -131,7 +131,7 @@ func (fs *Set) flagStart(arg string) (string, *Flag, error) {
 func (fs *Set) getFlag(key string) (*Flag, string) {
 	if key[0] == '-' {
 		key = key[1:]
-		for _, lflag := range flags {
+		for _, lflag := range fs.flags {
 			for _, lkey := range lflag.longKeys {
 				if lkey == key {
 					return lflag, lkey
@@ -139,7 +139,7 @@ func (fs *Set) getFlag(key string) (*Flag, string) {
 			}
 		}
 	} else {
-		for _, lflag := range flags {
+		for _, lflag := range fs.flags {
 			for _, lkey := range lflag.shortKeys {
 				if lkey == key {
 					return lflag, lkey

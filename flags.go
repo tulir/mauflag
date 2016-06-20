@@ -16,8 +16,6 @@
 
 package mauflag
 
-var flags []*Flag
-
 // Flag represents a single flag
 type Flag struct {
 	longKeys  []string
