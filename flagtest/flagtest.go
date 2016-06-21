@@ -18,17 +18,20 @@ package main
 
 import (
 	"fmt"
-	"maunium.net/go/mauflag"
+	flag "maunium.net/go/mauflag"
 )
 
 var bf = flag.Make().LongKey("bff").ShortKey("b").Bool()
+var xb = flag.Make().ShortKey("x").Bool()
+var yb = flag.Make().ShortKey("y").Bool()
+var zb = flag.Make().ShortKey("z").Bool()
 var str = flag.Make().LongKey("this-is-a-string").ShortKey("s").ShortKey("i").String()
 var array = flag.Make().LongKey("array").ShortKey("a").LongKey("arr").StringArray()
 var def = flag.Make().LongKey("asd").Default("lorem").String()
 
 func main() {
 	fmt.Println(flag.Parse())
-	fmt.Println(*bf)
+	fmt.Println(*bf, *xb, *yb, *zb)
 	fmt.Println(*str)
 	fmt.Println(*def)
 	for _, arg := range *array {

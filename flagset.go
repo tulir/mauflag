@@ -89,10 +89,10 @@ func (fs *Set) Parse() error {
 				return fs.err("Flag %s was not a %s", key, flag.Value.Name())
 			}
 			flag = nil
-		} else if arg[0] == '-' {
+		} else if arg[0] == '-' && len(arg) > 1 {
 			arg = strings.ToLower(arg)
 			var err error
-			key, flag, err = fs.flagStart(arg)
+			flag, key, err = fs.flagFound(arg[1:])
 			if err != nil {
 				return err
 			}
@@ -103,49 +103,69 @@ func (fs *Set) Parse() error {
 	return nil
 }
 
-func (fs *Set) flagStart(arg string) (string, *Flag, error) {
-	key := arg[1:]
-
+func (fs *Set) flagFound(arg string) (flag *Flag, key string, err error) {
+	key = arg
 	var val string
 	if strings.ContainsRune(key, '=') {
-		val = key[strings.Index(arg, "=")+1:]
-		key = key[:strings.Index(arg, "=")]
+		val = key[strings.Index(key, "=")+1:]
+		key = key[:strings.Index(key, "=")]
 	}
 
-	flag, key := fs.getFlag(key)
-	if flag == nil {
-		return "", nil, fs.err("Unknown flag: %s", key)
-	} else if len(val) > 0 {
-		flag.setValue(val)
-		return "", nil, nil
-	} else {
-		_, ok := flag.Value.(*boolValue)
-		if ok {
-			flag.setValue("true")
-			return "", nil, nil
-		}
+	var rem string
+	flag, key, rem = fs.getFlag(key)
+	flag, key, rem, err = fs.handleFlag(flag, key, rem, val)
+
+	if len(rem) > 0 {
+		return fs.flagFound(rem)
 	}
-	return key, flag, nil
+
+	return
 }
 
-func (fs *Set) getFlag(key string) (*Flag, string) {
+func (fs *Set) handleFlag(flag *Flag, key, rem, val string) (*Flag, string, string, error) {
+	var err error
+	var isBool bool
+
+	if flag != nil {
+		_, isBool = flag.Value.(*boolValue)
+	}
+
+	if flag == nil {
+		err = fs.err("Unknown flag: %s", key)
+	} else if len(val) > 0 && len(rem) == 0 {
+		flag.setValue(val)
+	} else if isBool {
+		flag.setValue("true")
+	} else if len(rem) > 0 {
+		flag.setValue(rem)
+		rem = ""
+	} else {
+		return flag, key, rem, err
+	}
+
+	return nil, "", rem, err
+}
+
+func (fs *Set) getFlag(key string) (*Flag, string, string) {
 	if key[0] == '-' {
 		key = key[1:]
 		for _, lflag := range fs.flags {
 			for _, lkey := range lflag.longKeys {
 				if lkey == key {
-					return lflag, lkey
+					return lflag, lkey, ""
 				}
 			}
 		}
-	} else {
-		for _, lflag := range fs.flags {
-			for _, lkey := range lflag.shortKeys {
-				if lkey == key {
-					return lflag, lkey
-				}
+		return nil, key, ""
+	}
+	rem := key[1:]
+	key = key[0:1]
+	for _, lflag := range fs.flags {
+		for _, lkey := range lflag.shortKeys {
+			if lkey == key {
+				return lflag, lkey, rem
 			}
 		}
 	}
-	return nil, key
+	return nil, key, rem
 }
