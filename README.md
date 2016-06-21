@@ -1,5 +1,5 @@
 # mauflag
-An extendable command-line argument parser for Golang.
+An extendable argument parser for Golang. Mostly follows the GNU [Program Argument Syntax Conventions](https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html).
 
 Use `go get maunium.net/go/mauflag` to get this package
 
