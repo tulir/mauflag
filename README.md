@@ -1,4 +1,5 @@
 # mauflag
+[![Build Status](https://travis-ci.org/tulir293/mauflag.svg?branch=master)](https://travis-ci.org/tulir293/mauflag)
 An extendable argument parser for Golang. Mostly follows the GNU [Program Argument Syntax Conventions](https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html).
 
 Use `go get maunium.net/go/mauflag` to get this package
