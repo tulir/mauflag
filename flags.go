@@ -46,13 +46,15 @@ func (flag *Flag) Usage(usage string) *Flag {
 }
 
 // Default sets the default value of this Flag
+// The value given is passed to the Value container of this flag using `Set()`
 func (flag *Flag) Default(defaul string) *Flag {
 	flag.defaul = defaul
+	flag.activateDefaultValue()
 	return flag
 }
 
 func (flag *Flag) activateDefaultValue() {
-	if len(flag.defaul) > 0 {
+	if len(flag.defaul) > 0 && flag.Value != nil {
 		flag.Value.Set(flag.defaul)
 	}
 }
