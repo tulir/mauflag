@@ -11,11 +11,34 @@ To create a flag, you must first call the `Make()` method in a flagset. Calling 
 
 After creating a flag, you can call the functions it has as you like. After configuring the flag, you can call one of the type functions to set the flag type and get a pointer to the value.
 
+### Examples
+Here's a basic string flag that can be set using `-s` or `--my-string-flag`
 ```go
 var myStringFlag = flag.Make().ShortKey("s").LongKey("my-string-flag").Default("a string").String()
 ```
-This example creates a flag that takes string values. The flag can be set using `-s` or `--my-string-flag`. If the input doesn't contain a value for the flag the value will be `a string`
 
+The following input arguments would set the value of the flag to `foo`
+* `-s`, `foo`
+* `-s=foo`
+* `-sfoo`
+* `--my-string-flag`, `foo`
+* `--my-string-flag=foo`
+
+#### Chaining
+Short boolean flags can be chained. The last flag of a chain doesn't necessarily have to be a boolean flag.
+For example, if we had the following flags defined
+```go
+var boolA = flag.Make().ShortKey("a").Bool()
+var boolB = flag.Make().ShortKey("b").Bool()
+var boolC = flag.Make().ShortKey("c").Bool()
+var stringD = flag.Make().ShortKey("d").String()
+```
+We could set the values of all the boolean flags to true with one input argument: `-abc`. We could also add the `d` flag to the end like so: `-abcd`, `foo`.
+Any of the other ways to set short flags also work (`-abcd=foo`, `-abcdfoo`).
+
+However, if you put `d` as the first flag (`-dabc`) the value of the `d` flag will be `abc` and none of the boolean flags would change.
+
+### Godoc
 More docs, including all values supported by default, can be found from [godoc.org/maunium.net/go/mauflag](https://godoc.org/maunium.net/go/mauflag)
 
 ## Custom values
