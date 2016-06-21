@@ -91,7 +91,7 @@ func (val *stringArrayValue) Set(newVal string) error {
 type intArrayValue []int
 
 func (val *intArrayValue) Name() string {
-	return "signed integer"
+	return "integer"
 }
 
 func (val *intArrayValue) Set(newVal string) error {
@@ -106,7 +106,7 @@ func (val *intArrayValue) Set(newVal string) error {
 type int64ArrayValue []int64
 
 func (val *int64ArrayValue) Name() string {
-	return "signed 64-bit integer"
+	return "64-bit integer"
 }
 
 func (val *int64ArrayValue) Set(newVal string) error {
