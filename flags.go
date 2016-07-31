@@ -71,6 +71,11 @@ func (flag *Flag) ShortKey(key string) *Flag {
 	return flag
 }
 
+// Key adds a long and a short key to this Flag
+func (flag *Flag) Key(short, long string) *Flag {
+	return flag.ShortKey(short).LongKey(long)
+}
+
 // Custom sets a custom object that implemets Value as the value of this flag
 func (flag *Flag) Custom(val Value) {
 	flag.Value = val
