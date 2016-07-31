@@ -17,6 +17,7 @@
 package mauflag
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -32,6 +33,10 @@ type Set struct {
 	// Whether or not to exit the program when there's an error
 	// If enabled, the error message will be printed to `stderr` after which `os.Exit(1)` will be called.
 	ExitOnError bool
+
+	wantHelp      *bool
+	BasicUsage    string
+	HelpFirstLine string
 
 	args  []string
 	flags []*Flag
@@ -59,6 +64,69 @@ func (fs *Set) Arg(i int) string {
 // NArg returns the number of arguments not associated with any flags
 func (fs *Set) NArg() int {
 	return len(fs.args)
+}
+
+// MakeHelpFlag creates the -h, --help flag
+func (fs *Set) MakeHelpFlag() (*bool, *Flag) {
+	var flag = fs.Make().Key("h", "help").Usage("Show this help page.").UsageCategory("Help")
+	fs.wantHelp = flag.Bool()
+	return fs.wantHelp, flag
+}
+
+// CheckHelpFlag checks if the help flag is set and prints the help page if needed.
+// Return value tells whether or not the help page was printed
+func (fs *Set) CheckHelpFlag() bool {
+	if fs.wantHelp != nil && *fs.wantHelp {
+		fs.PrintHelp()
+		return true
+	}
+	return false
+}
+
+// PrintHelp prints the help page
+func (fs *Set) PrintHelp() {
+	fmt.Fprint(os.Stdout, fs.HelpFirstLine, "\n")
+	fmt.Fprint(os.Stdout, "\n")
+	fmt.Fprint(os.Stdout, "Usage:\n")
+	fmt.Fprint(os.Stdout, "  ", fs.BasicUsage, "\n\n")
+
+	var helpSects = make(map[string][]*Flag)
+	for _, flag := range fs.flags {
+		arr := helpSects[flag.usageCat]
+		if arr == nil {
+			arr = make([]*Flag, 2)
+		}
+		arr = append(arr, flag)
+		helpSects[flag.usageCat] = arr
+	}
+
+	for sect, flags := range helpSects {
+		fmt.Fprint(os.Stdout, sect, " options:\n")
+		for _, flag := range flags {
+			fmt.Fprint(os.Stdout, "  ")
+
+			var buf bytes.Buffer
+			for _, key := range flag.shortKeys {
+				buf.WriteString(key)
+				buf.WriteString(", ")
+			}
+			keys := buf.String()
+			fmt.Fprint(os.Stdout, keys[:len(keys)-2])
+
+			buf.Reset()
+			for _, key := range flag.longKeys {
+				buf.WriteString(key)
+				if len(flag.usageValName) > 0 {
+					buf.WriteString("=")
+					buf.WriteString(flag.usageValName)
+				}
+				buf.WriteString(", ")
+			}
+			keys = buf.String()
+			fmt.Fprint(os.Stdout, keys[:len(keys)-2])
+
+		}
+	}
 }
 
 func (fs *Set) err(format string, args ...interface{}) error {

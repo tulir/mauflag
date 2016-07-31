@@ -18,11 +18,13 @@ package mauflag
 
 // Flag represents a single flag
 type Flag struct {
-	longKeys  []string
-	shortKeys []string
-	Value     Value
-	defaul    string
-	usage     string
+	longKeys     []string
+	shortKeys    []string
+	Value        Value
+	defaul       string
+	usage        string
+	usageCat     string
+	usageValName string
 }
 
 // Make creates and registers a flag
@@ -42,6 +44,18 @@ func (flag *Flag) setValue(val string) error {
 // Usage sets the usage of this Flag
 func (flag *Flag) Usage(usage string) *Flag {
 	flag.usage = usage
+	return flag
+}
+
+// UsageCategory sets the category of this flag (e.g. Application or Help)
+func (flag *Flag) UsageCategory(category string) *Flag {
+	flag.usageCat = category
+	return flag
+}
+
+// ValueName sets the value name in the usage page
+func (flag *Flag) ValueName(valname string) *Flag {
+	flag.usageValName = valname
 	return flag
 }
 
