@@ -32,6 +32,7 @@ func (fs *Set) Make() *Flag {
 	flag := &Flag{}
 	val := stringValue("")
 	flag.Value = &val
+	flag.usageCat = "Application"
 	flag.activateDefaultValue()
 	fs.flags = append(fs.flags, flag)
 	return flag
