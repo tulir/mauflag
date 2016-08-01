@@ -100,9 +100,10 @@ func (fs *Set) PrintHelp() {
 	for _, flag := range fs.flags {
 		arr := helpSects[flag.usageCat]
 		if arr == nil {
-			arr = make([]*Flag, 2)
+			arr = []*Flag{flag}
+		} else {
+			arr = append(arr, flag)
 		}
-		arr = append(arr, flag)
 		helpSects[flag.usageCat] = arr
 	}
 
