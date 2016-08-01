@@ -35,8 +35,8 @@ type Set struct {
 	ExitOnError bool
 
 	wantHelp      *bool
-	BasicUsage    string
-	HelpFirstLine string
+	basicUsage    string
+	helpFirstLine string
 
 	args  []string
 	flags []*Flag
@@ -83,12 +83,18 @@ func (fs *Set) CheckHelpFlag() bool {
 	return false
 }
 
+// SetHelpTitles sets the first line (program name and basic explanation) and basic usage specification
+func (fs *Set) SetHelpTitles(firstLine, basicUsage string) {
+	fs.helpFirstLine = firstLine
+	fs.basicUsage = basicUsage
+}
+
 // PrintHelp prints the help page
 func (fs *Set) PrintHelp() {
-	fmt.Fprint(os.Stdout, fs.HelpFirstLine, "\n")
+	fmt.Fprint(os.Stdout, fs.helpFirstLine, "\n")
 	fmt.Fprint(os.Stdout, "\n")
 	fmt.Fprint(os.Stdout, "Usage:\n")
-	fmt.Fprint(os.Stdout, "  ", fs.BasicUsage, "\n\n")
+	fmt.Fprint(os.Stdout, "  ", fs.basicUsage, "\n\n")
 
 	var helpSects = make(map[string][]*Flag)
 	for _, flag := range fs.flags {
