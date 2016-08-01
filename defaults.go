@@ -52,3 +52,24 @@ func Arg(i int) string {
 func NArg() int {
 	return len(DefaultSet().args)
 }
+
+// MakeHelpFlag creates the -h, --help flag
+func MakeHelpFlag() (*bool, *Flag) {
+	return DefaultSet().MakeHelpFlag()
+}
+
+// CheckHelpFlag checks if the help flag is set and prints the help page if needed.
+// Return value tells whether or not the help page was printed
+func CheckHelpFlag() bool {
+	return DefaultSet().CheckHelpFlag()
+}
+
+// SetHelpTitles sets the first line (program name and basic explanation) and basic usage specification
+func SetHelpTitles(firstLine, basicUsage string) {
+	DefaultSet().SetHelpTitles(firstLine, basicUsage)
+}
+
+// PrintHelp prints the help page
+func PrintHelp() {
+	DefaultSet().PrintHelp()
+}
