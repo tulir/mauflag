@@ -17,7 +17,6 @@
 package mauflag
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -91,11 +90,6 @@ func (fs *Set) SetHelpTitles(firstLine, basicUsage string) {
 
 // PrintHelp prints the help page
 func (fs *Set) PrintHelp() {
-	fmt.Fprint(os.Stdout, fs.helpFirstLine, "\n")
-	fmt.Fprint(os.Stdout, "\n")
-	fmt.Fprint(os.Stdout, "Usage:\n")
-	fmt.Fprint(os.Stdout, "  ", fs.basicUsage, "\n\n")
-
 	var helpSects = make(map[string][]*Flag)
 	for _, flag := range fs.flags {
 		arr := helpSects[flag.usageCat]
@@ -107,32 +101,52 @@ func (fs *Set) PrintHelp() {
 		helpSects[flag.usageCat] = arr
 	}
 
+	var maxLen = 0
+	var data = make(map[string][]string)
 	for sect, flags := range helpSects {
-		fmt.Fprint(os.Stdout, sect, " options:\n")
-		for _, flag := range flags {
-			fmt.Fprint(os.Stdout, "  ")
+		var sData = make([]string, len(flags))
+		for i, flag := range flags {
+			var fData = []string{"  "}
 
-			var buf bytes.Buffer
 			for _, key := range flag.shortKeys {
-				buf.WriteString(key)
-				buf.WriteString(", ")
+				fData = append(fData, "-")
+				fData = append(fData, key)
+				fData = append(fData, ", ")
 			}
-			keys := buf.String()
-			fmt.Fprint(os.Stdout, keys[:len(keys)-2])
 
-			buf.Reset()
 			for _, key := range flag.longKeys {
-				buf.WriteString(key)
+				fData = append(fData, "--")
+				fData = append(fData, key)
 				if len(flag.usageValName) > 0 {
-					buf.WriteString("=")
-					buf.WriteString(flag.usageValName)
+					fData = append(fData, "=")
+					fData = append(fData, flag.usageValName)
 				}
-				buf.WriteString(", ")
+				fData = append(fData, ", ")
 			}
-			keys = buf.String()
-			fmt.Fprint(os.Stdout, keys[:len(keys)-2])
 
+			if fData[len(fData)-1] == ", " {
+				fData = fData[:len(fData)-1]
+			}
+
+			sData[i] = strings.Join(fData, "")
+			if len(sData[i]) > maxLen {
+				maxLen = len(sData[i])
+			}
 		}
+		data[sect] = sData
+	}
+
+	fmt.Print(fs.helpFirstLine, "\n\n")
+	fmt.Print("Usage:\n  ", fs.basicUsage, "\n\n")
+
+	for sect, sData := range data {
+		fmt.Print(sect, " options:\n")
+
+		for i, fData := range sData {
+			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+1), helpSects[sect][i].usage, "\n")
+		}
+
+		fmt.Print("\n")
 	}
 }
 
