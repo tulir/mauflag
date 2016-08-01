@@ -101,8 +101,25 @@ func (fs *Set) PrintHelp() {
 		helpSects[flag.usageCat] = arr
 	}
 
-	var maxLen = 0
-	var data = make(map[string][]string)
+	data, maxLen := fs.formatFlagHelp(helpSects)
+
+	fmt.Print(fs.helpFirstLine, "\n\n")
+	fmt.Print("Usage:\n  ", fs.basicUsage, "\n\n")
+
+	for sect, sData := range data {
+		fmt.Print(sect, " options:\n")
+
+		for i, fData := range sData {
+			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+1), helpSects[sect][i].usage, "\n")
+		}
+
+		fmt.Print("\n")
+	}
+}
+
+func (fs *Set) formatFlagHelp(helpSects map[string][]*Flag) (data map[string][]string, maxLen int) {
+	maxLen = 0
+	data = make(map[string][]string)
 	for sect, flags := range helpSects {
 		var sData = make([]string, len(flags))
 		for i, flag := range flags {
@@ -135,19 +152,7 @@ func (fs *Set) PrintHelp() {
 		}
 		data[sect] = sData
 	}
-
-	fmt.Print(fs.helpFirstLine, "\n\n")
-	fmt.Print("Usage:\n  ", fs.basicUsage, "\n\n")
-
-	for sect, sData := range data {
-		fmt.Print(sect, " options:\n")
-
-		for i, fData := range sData {
-			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+1), helpSects[sect][i].usage, "\n")
-		}
-
-		fmt.Print("\n")
-	}
+	return
 }
 
 func (fs *Set) err(format string, args ...interface{}) error {
