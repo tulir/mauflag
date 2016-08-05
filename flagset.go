@@ -43,7 +43,7 @@ type Set struct {
 
 // New creates a new flagset
 func New(args []string) *Set {
-	return &Set{InputArgs: args}
+	return &Set{InputArgs: args, DoubleLineEscape: true, ExitOnError: false}
 }
 
 // Args returns the arguments that weren't associated with any flag
