@@ -90,36 +90,44 @@ func (fs *Set) SetHelpTitles(firstLine, basicUsage string) {
 
 // PrintHelp prints the help page
 func (fs *Set) PrintHelp() {
-	var helpSects = make(map[string][]*Flag)
+	var helpSectNames = make(map[string]int)
+	var helpSectIndexes = make(map[int]string)
+	var helpSects = make([][]*Flag, 0)
 	for _, flag := range fs.flags {
-		arr := helpSects[flag.usageCat]
-		if arr == nil {
-			arr = []*Flag{flag}
+		index, ok := helpSectNames[flag.usageCat]
+		if !ok {
+			arr := []*Flag{flag}
+			helpSects = append(helpSects, arr)
+			helpSectNames[flag.usageCat] = len(helpSects) - 1
+			helpSectIndexes[len(helpSects)-1] = flag.usageCat
 		} else {
-			arr = append(arr, flag)
+			helpSects[index] = append(helpSects[index], flag)
 		}
-		helpSects[flag.usageCat] = arr
 	}
 
 	data, maxLen := fs.formatFlagHelp(helpSects)
 
-	fmt.Print(fs.helpFirstLine, "\n\n")
-	fmt.Print("Usage:\n  ", fs.basicUsage, "\n\n")
+	fmt.Printf(`%s
+
+Usage:
+  %s
+
+`, fs.helpFirstLine, fs.basicUsage)
 
 	for sect, sData := range data {
-		fmt.Print(sect, " options:\n")
+		fmt.Print(helpSectIndexes[sect], " options:\n")
 
 		for i, fData := range sData {
-			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+1), helpSects[sect][i].usage, "\n")
+			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+3), helpSects[sect][i].usage, "\n")
 		}
 
 		fmt.Print("\n")
 	}
 }
 
-func (fs *Set) formatFlagHelp(helpSects map[string][]*Flag) (data map[string][]string, maxLen int) {
+func (fs *Set) formatFlagHelp(helpSects [][]*Flag) (data [][]string, maxLen int) {
 	maxLen = 0
-	data = make(map[string][]string)
+	data = make([][]string, len(helpSects))
 	for sect, flags := range helpSects {
 		var sData = make([]string, len(flags))
 		for i, flag := range flags {
