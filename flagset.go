@@ -33,6 +33,10 @@ type Set struct {
 	// If enabled, the error message will be printed to `stderr` after which `os.Exit(1)` will be called.
 	ExitOnError bool
 
+	wantHelp      *bool
+	basicUsage    string
+	helpFirstLine string
+
 	args  []string
 	flags []*Flag
 }
@@ -59,6 +63,104 @@ func (fs *Set) Arg(i int) string {
 // NArg returns the number of arguments not associated with any flags
 func (fs *Set) NArg() int {
 	return len(fs.args)
+}
+
+// MakeHelpFlag creates the -h, --help flag
+func (fs *Set) MakeHelpFlag() (*bool, *Flag) {
+	var flag = fs.Make().Key("h", "help").Usage("Show this help page.").UsageCategory("Help")
+	fs.wantHelp = flag.Bool()
+	return fs.wantHelp, flag
+}
+
+// CheckHelpFlag checks if the help flag is set and prints the help page if needed.
+// Return value tells whether or not the help page was printed
+func (fs *Set) CheckHelpFlag() bool {
+	if fs.wantHelp != nil && *fs.wantHelp {
+		fs.PrintHelp()
+		return true
+	}
+	return false
+}
+
+// SetHelpTitles sets the first line (program name and basic explanation) and basic usage specification
+func (fs *Set) SetHelpTitles(firstLine, basicUsage string) {
+	fs.helpFirstLine = firstLine
+	fs.basicUsage = basicUsage
+}
+
+// PrintHelp prints the help page
+func (fs *Set) PrintHelp() {
+	var helpSectNames = make(map[string]int)
+	var helpSectIndexes = make(map[int]string)
+	var helpSects = make([][]*Flag, 0)
+	for _, flag := range fs.flags {
+		index, ok := helpSectNames[flag.usageCat]
+		if !ok {
+			arr := []*Flag{flag}
+			helpSects = append(helpSects, arr)
+			helpSectNames[flag.usageCat] = len(helpSects) - 1
+			helpSectIndexes[len(helpSects)-1] = flag.usageCat
+		} else {
+			helpSects[index] = append(helpSects[index], flag)
+		}
+	}
+
+	data, maxLen := fs.formatFlagHelp(helpSects)
+
+	fmt.Printf(`%s
+
+Usage:
+  %s
+
+`, fs.helpFirstLine, fs.basicUsage)
+
+	for sect, sData := range data {
+		fmt.Print(helpSectIndexes[sect], " options:\n")
+
+		for i, fData := range sData {
+			fmt.Print(fData, strings.Repeat(" ", maxLen-len(fData)+3), helpSects[sect][i].usage, "\n")
+		}
+
+		fmt.Print("\n")
+	}
+}
+
+func (fs *Set) formatFlagHelp(helpSects [][]*Flag) (data [][]string, maxLen int) {
+	maxLen = 0
+	data = make([][]string, len(helpSects))
+	for sect, flags := range helpSects {
+		var sData = make([]string, len(flags))
+		for i, flag := range flags {
+			var fData = []string{"  "}
+
+			for _, key := range flag.shortKeys {
+				fData = append(fData, "-")
+				fData = append(fData, key)
+				fData = append(fData, ", ")
+			}
+
+			for _, key := range flag.longKeys {
+				fData = append(fData, "--")
+				fData = append(fData, key)
+				if len(flag.usageValName) > 0 {
+					fData = append(fData, "=")
+					fData = append(fData, flag.usageValName)
+				}
+				fData = append(fData, ", ")
+			}
+
+			if fData[len(fData)-1] == ", " {
+				fData = fData[:len(fData)-1]
+			}
+
+			sData[i] = strings.Join(fData, "")
+			if len(sData[i]) > maxLen {
+				maxLen = len(sData[i])
+			}
+		}
+		data[sect] = sData
+	}
+	return
 }
 
 func (fs *Set) err(format string, args ...interface{}) error {

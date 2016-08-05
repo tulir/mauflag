@@ -21,16 +21,23 @@ import (
 	flag "maunium.net/go/mauflag"
 )
 
-var bf = flag.Make().LongKey("bff").ShortKey("b").Bool()
-var xb = flag.Make().ShortKey("x").Bool()
-var yb = flag.Make().ShortKey("y").Bool()
-var zb = flag.Make().ShortKey("z").Bool()
-var str = flag.Make().LongKey("this-is-a-string").ShortKey("s").ShortKey("i").String()
-var array = flag.Make().LongKey("array").ShortKey("a").LongKey("arr").StringArray()
-var def = flag.Make().LongKey("asd").Default("lorem").String()
+var bf = flag.Make().LongKey("bff").ShortKey("b").Usage("Change the variable 'bf'").Bool()
+var xb = flag.Make().ShortKey("x").Usage("Set the boolean X").UsageCategory("XYZ").Bool()
+var yb = flag.Make().ShortKey("y").Usage("Set the boolean Y").UsageCategory("XYZ").Bool()
+var zb = flag.Make().ShortKey("z").Usage("Set the boolean Z").UsageCategory("XYZ").Bool()
+var str = flag.Make().LongKey("this-is-a-string").ShortKey("s").ShortKey("i").Usage("Set a string value").String()
+var array = flag.Make().LongKey("array").ShortKey("a").LongKey("arr").Usage("Add values to an array").StringArray()
+var def = flag.Make().LongKey("asd").Default("lorem").Usage("Change a variable").String()
 
 func main() {
+	flag.MakeHelpFlag()
+	flag.SetHelpTitles("flagtest - Test the mauflag package", "mauflag [-b] [-x] [-y] [-z] [-s STRING] [-a ARRAY VALUE] [--asd STRING]")
 	fmt.Println(flag.Parse())
+
+	if flag.CheckHelpFlag() {
+		return
+	}
+
 	fmt.Println(*bf, *xb, *yb, *zb)
 	fmt.Println(*str)
 	fmt.Println(*def)
