@@ -32,6 +32,16 @@ func Make() *Flag {
 	return DefaultSet().Make()
 }
 
+// MakeKey creates and registers a flag with the given short and long keys
+func MakeKey(short, long string) *Flag {
+	return DefaultSet().MakeKey(short, long)
+}
+
+// MakeFull creates and registers a flag with the given short and long keys, usage string and default value
+func MakeFull(short, long, usage, defVal string) *Flag {
+	return DefaultSet().MakeFull(short, long, usage, defVal)
+}
+
 // Parse the command line arguments into mauflag form
 func Parse() error {
 	return DefaultSet().Parse()

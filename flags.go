@@ -38,6 +38,16 @@ func (fs *Set) Make() *Flag {
 	return flag
 }
 
+// MakeKey creates and registers a flag with the given short and long keys
+func (fs *Set) MakeKey(short, long string) *Flag {
+	return fs.Make().Key(short, long)
+}
+
+// MakeFull creates and registers a flag with the given short and long keys, usage string and default value
+func (fs *Set) MakeFull(short, long, usage, defVal string) *Flag {
+	return fs.MakeKey(short, long).Usage(usage).Default(defVal)
+}
+
 func (flag *Flag) setValue(val string) error {
 	return flag.Value.Set(val)
 }
